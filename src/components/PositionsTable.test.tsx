@@ -4,7 +4,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import PositionsTable from './PositionsTable';
+import PositionsTable from './ModernPositionsTable';
 
 const positions = {
   collateral: { USDC: 150n, BTC: 50n },
