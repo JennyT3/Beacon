@@ -4,8 +4,6 @@ Beacon is a real-time notification and monitoring tool that integrates directly 
 
 Built for the **Compose the Future Hackathon** hosted by Stellar and Blend Capital, Beacon is designed to **increase safety, education, and retention** in decentralized lending.
 
----
-
 ## 🔥 Why Beacon?
 
 Many DeFi users fail to actively monitor their lending positions. When collateralization ratios fall, they can be **liquidated unexpectedly**, losing funds and trust.
@@ -17,7 +15,6 @@ Many DeFi users fail to actively monitor their lending positions. When collatera
 - Offering **actionable tips** to restore health (e.g. add collateral)
 - Explaining how Blend and liquidation logic works
 
----
 
 ## 🧠 How It Works
 
@@ -87,32 +84,23 @@ npm install
 npm run dev
 ```
 
-🧩 Future Plans
+## 🧩 Future Plans
 🔐 Telegram auth with public key mapping
-
 📱 PWA deployment
-
 🧠 Gamified onboarding (learn Blend, earn badges)
-
 ⛑️ DAO alert dashboard for owned pools
 
-🎓 Educational Value
+## 🎓 Educational Value
 Beacon includes inline education explaining:
-
 What is collateralization?
-
 How are health factors calculated?
-
 How does Blend’s liquidation mechanism work (Dutch auctions, partial fills)?
-
 What are backstop modules and how do they affect risk?
 
-🏁 Submission for Stellar + Blend Hackathon
+## 🏁 Submission for Stellar + Blend Hackathon
 Category: Risk & Alert Systems
 Hackathon: Compose the Future on Stellar
 Goal: Make DeFi safer, smarter, and more accessible for Blend users.
 
-📜 License
-MIT – use, modify, and share freely with the community 💛
 
 Made with ❤️ by team Beacon during the Blend x Stellar Hackathon
