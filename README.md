@@ -36,23 +36,11 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
-
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-
-
-**Beacon solves this** by:
-
-- Monitoring health factors across Blend isolated pools
-- Sending **real-time alerts** (in-app, Telegram, or email)
-- Offering **actionable tips** to restore health (e.g. add collateral)
-- Explaining how Blend and liquidation logic works
 
 
 ## 🧠 How It Works
@@ -86,7 +74,7 @@ We use react-hot-toast and Telegram/email bots to warn users instantly.
 ```
 toast.error("⚠️ USDC position at risk: HF 118%");
 ```
-# 🧱 Blend Protocol Compatibility
+## 🧱 Blend Protocol Compatibility
 Beacon is built on top of Blend V2, fully aligned with its key concepts:
 
 ✅ Isolated Lending Pools: Each pool is monitored independently
@@ -101,21 +89,16 @@ Beacon is built on top of Blend V2, fully aligned with its key concepts:
 
 
 
-# 🧪 Tech Stack
-Layer	Tool / Library
-Frontend	React, TypeScript, Tailwind CSS
-Wallets	Freighter, Albedo
-Data Fetching	SWR (with automatic polling)
-SDKs	@blend-capital/blend-sdk, stellar-sdk
-Notifications	react-hot-toast, Telegram Bot API
+## 🧪 Technology Stack
+| Layer              | Technology / Library                  |
+| ------------------ | ------------------------------------- |
+| Frontend           | React, TypeScript, Tailwind CSS       |
+| Wallet Integration | Freighter, Albedo                     |
+| Data Fetching      | SWR with polling                      |
+| SDKs               | @blend-capital/blend-sdk, stellar-sdk |
+| Notifications      | react-hot-toast, Telegram Bot API     |
 
-# 🛠️ Project Setup
-```
-git clone https://github.com/beacon-alerts/beacon-blend.git
-cd beacon-blend
-npm install
-npm run dev
-```
+
 
 ## 🧩 Roadmap
 - Telegram authentication linked to public keys
@@ -130,7 +113,6 @@ What is collateralization?
 How are health factors calculated?
 How does Blend’s liquidation mechanism work (Dutch auctions, partial fills)?
 What are backstop modules and how do they affect risk?
-
 
 Made with ❤️ by team Beacon during the Blend x Stellar Hackathon
 >>>>>>> 331d8b18516a964c3e1497719de232b00c805b6d
