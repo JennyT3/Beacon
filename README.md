@@ -1,6 +1,15 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Beacon — Liquidation Alert System for Blend Capital on Stellar
 
+Real-time monitoring and alert system that protects Blend lending protocol users on Stellar from liquidation risks by providing actionable notifications via app, Telegram, and email.
+
+---
+
+## 🎥 Demo & Repo
+
+- Video demo: 
+- Repository: https://github.com/JennyT3/Beacon
+
+---
 ## Getting Started
 
 First, run the development server:
@@ -36,15 +45,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 =======
-# 🛡️ Beacon – Liquidation Alert System for Blend on Stellar
 
-Beacon is a real-time notification and monitoring tool that integrates directly with the **Blend lending protocol on Stellar**. It protects users by tracking their positions and **alerting them when they're at risk of liquidation**.
-
-Built for the **Compose the Future Hackathon** hosted by Stellar and Blend Capital, Beacon is designed to **increase safety, education, and retention** in decentralized lending.
-
-## 🔥 Why Beacon?
-
-Many DeFi users fail to actively monitor their lending positions. When collateralization ratios fall, they can be **liquidated unexpectedly**, losing funds and trust.
 
 **Beacon solves this** by:
 
@@ -98,13 +99,7 @@ Beacon is built on top of Blend V2, fully aligned with its key concepts:
 
 ✅ Matches Emission and Reward Zone logic
 
-# 💡 Features
-🔄 Live Health Factor Tracking (per pool)
-🛎️ In-app, Telegram, and Email Alerts
-🧠 UX Tips to Repair Positions (educational layer)
-⚙️ Configurable Alert Threshold (future update)
-📊 Position Table with Color-Coded Risk
-🏦 Minimal & Composable Frontend (React + Tailwind)
+
 
 # 🧪 Tech Stack
 Layer	Tool / Library
@@ -122,11 +117,12 @@ npm install
 npm run dev
 ```
 
-## 🧩 Future Plans
-🔐 Telegram auth with public key mapping
-📱 PWA deployment
-🧠 Gamified onboarding (learn Blend, earn badges)
-⛑️ DAO alert dashboard for owned pools
+## 🧩 Roadmap
+- Telegram authentication linked to public keys
+- Progressive Web App (PWA) support
+- Gamified onboarding to learn Blend concepts and earn badges
+- DAO-managed alert dashboards for owned pools
+
 
 ## 🎓 Educational Value
 Beacon includes inline education explaining:
@@ -134,11 +130,6 @@ What is collateralization?
 How are health factors calculated?
 How does Blend’s liquidation mechanism work (Dutch auctions, partial fills)?
 What are backstop modules and how do they affect risk?
-
-## 🏁 Submission for Stellar + Blend Hackathon
-Category: Risk & Alert Systems
-Hackathon: Compose the Future on Stellar
-Goal: Make DeFi safer, smarter, and more accessible for Blend users.
 
 
 Made with ❤️ by team Beacon during the Blend x Stellar Hackathon
