@@ -3,11 +3,10 @@
 Real-time monitoring and alert system that protects Blend lending protocol users on Stellar from liquidation risks by providing actionable notifications via app, Telegram, and email.
 
 ---
-
-## 🎥 Demo & Repo
-
+- Pitch Deck: 
 - Video demo: 
 - Repository: https://github.com/JennyT3/Beacon
+- Docs: 
 
 ---
 ## Getting Started
