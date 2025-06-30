@@ -10,13 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@blend-capital/blend-sdk": "^2.2.0",
+    "@blend-capital/blend-sdk": "^3.0.1",
     "@radix-ui/react-slot": "^1.2.3",
     "@shadcn/ui": "^0.0.4",
     "@stellar/freighter-api": "^4.1.0",
     "bignumber.js": "^9.3.0",
     "class-variance-authority": "^0.7.1",
     "next": "15.3.4",
+    "passkey-kit": "^0.10.24",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",

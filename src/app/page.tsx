@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
 import useSWR from "swr"
+import { PoolV2 } from "@blend-capital/blend-sdk"
 
 import { useFreighter } from "../hooks/useFreighter"
-import { Pool } from "@blend-capital/blend-sdk"
 import { calculateHealthFactor } from "../lib/health"
-import  Header from "../components/Header"
+import Header from "../components/Header"
 import { sendTelegramNotification } from "../lib/sendTgNotification"
 
 const rpcUrl = "https://soroban-testnet.stellar.org"
 const passphrase = "Test SDF Network ; September 2015"
-const POOL_ID = process.env.NEXT_PUBLIC_BLEND_POOL_ID || "REPLACE_WITH_REAL_POOL_ID"
+const POOL_ID = process.env.NEXT_PUBLIC_BLEND_POOL_ID || "CCLBPEYS3XFK65MYYXSBMOGKUI4ODN5S7SUZBGD7NALUQF64QILLX5B5"
 
 interface Positions {
   collateral: Record<string, bigint>
@@ -190,48 +190,72 @@ export default function Home() {
   const [mockCollateral, setMockCollateral] = useState<string>("200")
   const [mockDebt, setMockDebt] = useState<string>("150")
 
-  const fetchUser = async () => {
-    if (!publicKey) return null
-    const pool = await Pool.load({ rpc: rpcUrl, passphrase }, POOL_ID)
-    const user = await pool.loadUser(publicKey)
-    return user
+// fetchUser rimane così:
+const fetchUser = async () => {
+  if (!publicKey) return null
+  const pool     = await PoolV2.load({ rpc: rpcUrl, passphrase }, POOL_ID)
+  const poolUser = await pool.loadUser(publicKey)
+  console.log("🔍 [fetchUser] raw poolUser.positions:", poolUser.positions)
+  return poolUser.positions      // <-- Positions
+}
+
+  const { data: realPositions } = useSWR(
+    publicKey && !mockMode ? ["positions", publicKey, POOL_ID] : null,
+    fetchUser,
+    { refreshInterval: 5_000 }
+  )
+  console.log("🔄 [useSWR] realPositions:", realPositions)
+
+  const rawPositions = realPositions ?? { 
+    collateral: new Map(), 
+    liabilities: new Map() 
   }
 
-  const { data: user } = useSWR(publicKey ? ["positions", publicKey] : null, fetchUser, { refreshInterval: 5000 })
-
-  const rawPositions = (user?.positions as unknown as {
-    collateral: Record<string, bigint>
-    debt?: Record<string, bigint>
-  }) || { collateral: {}, debt: {} }
-
   const positions: Positions = mockMode
-    ? { collateral: { MOCK: BigInt(mockCollateral) }, debt: { MOCK: BigInt(mockDebt) } }
-    : { collateral: rawPositions.collateral, debt: rawPositions.debt ?? {} }
+    ? {
+        collateral: { MOCK: BigInt(mockCollateral) },
+        debt:       { MOCK: BigInt(mockDebt) },
+      }
+    : {
+        collateral: Object.fromEntries(
+          Array.from(rawPositions.collateral.entries()).map(
+            ([assetId, amt]) => [assetId, BigInt(amt)]
+          )
+        ),
+        debt: Object.fromEntries(
+          Array.from(rawPositions.liabilities.entries()).map(
+            ([assetId, amt]) => [assetId, BigInt(amt)]
+          )
+        ),
+      }
+      console.log("➡️ rawPositions.collateral:", Array.from(rawPositions.collateral.entries()))
+console.log("➡️ rawPositions.liabilities:", Array.from(rawPositions.liabilities.entries()))
 
-    useEffect(() => {
-      if (!positions.collateral || !positions.debt) return
-    
-      const LIQUIDATION_THRESHOLD = 100
-      const NEAR_LIQ_THRESHOLD = 110
-    
-      Object.entries(positions.collateral).forEach(([asset, collateral]) => {
-        const debt = positions.debt[asset] || 0n
-        const hf = calculateHealthFactor(collateral, debt)
-    
-        if (hf <= LIQUIDATION_THRESHOLD && !alerts[asset]) {
-          const msg = `${asset} under-collateralized: ${hf.toFixed(2)}% — at risk of liquidation!`
-          toast.error(msg, { duration: 8000 })
-          sendTelegramNotification(`⚠️ ${msg}`)
-          setAlerts((prev) => ({ ...prev, [asset]: true }))
-        } else if (hf <= NEAR_LIQ_THRESHOLD && hf > LIQUIDATION_THRESHOLD && !alerts[`${asset}-near`]) {
-          const msg = `${asset} close to liquidation: ${hf.toFixed(2)}%`
-          toast(msg, { icon: "⚠️", duration: 6000 })
-          sendTelegramNotification(`⚠️ ${msg}`)
-          setAlerts((prev) => ({ ...prev, [`${asset}-near`]: true }))
-        }
-      })
-    }, [positions, alerts])
-    
+
+  useEffect(() => {
+    if (!positions.collateral || !positions.debt) return
+  
+    const LIQUIDATION_THRESHOLD = 100
+    const NEAR_LIQ_THRESHOLD = 110
+  
+    Object.entries(positions.collateral).forEach(([asset, collateral]) => {
+      const debt = positions.debt[asset] || 0n
+      const hf = calculateHealthFactor(collateral, debt)
+  
+      if (hf <= LIQUIDATION_THRESHOLD && !alerts[asset]) {
+        const msg = `${asset} under-collateralized: ${hf.toFixed(2)}% — at risk of liquidation!`
+        toast.error(msg, { duration: 8000 })
+        sendTelegramNotification(`⚠️ ${msg}`)
+        setAlerts((prev) => ({ ...prev, [asset]: true }))
+      } else if (hf <= NEAR_LIQ_THRESHOLD && hf > LIQUIDATION_THRESHOLD && !alerts[`${asset}-near`]) {
+        const msg = `${asset} close to liquidation: ${hf.toFixed(2)}%`
+        toast(msg, { icon: "⚠️", duration: 6000 })
+        sendTelegramNotification(`⚠️ ${msg}`)
+        setAlerts((prev) => ({ ...prev, [`${asset}-near`]: true }))
+      }
+    })
+  }, [positions, alerts])
+  
 
   const totalCollateral = Object.values(positions.collateral).reduce((sum, val) => sum + val, 0n)
   const totalDebt = Object.values(positions.debt).reduce((sum, val) => sum + val, 0n)
