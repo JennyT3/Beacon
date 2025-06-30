@@ -7,6 +7,7 @@ import useSWR from "swr"
 import { useFreighter } from "../hooks/useFreighter"
 import { Pool } from "@blend-capital/blend-sdk"
 import { calculateHealthFactor } from "../lib/health"
+import  Header from "../components/Header"
 
 const rpcUrl = "https://soroban-testnet.stellar.org"
 const passphrase = "Test SDF Network ; September 2015"
@@ -244,51 +245,12 @@ export default function Home() {
   return (
     <div style={styles.container}>
       {/* Header */}
-      <header style={styles.header}>
-        <div style={styles.headerContent}>
-          <div style={styles.logo}>
-            <div style={styles.logoIcon}>SB</div>
-            <div>
-              <h1 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "bold" }}>Stellar Blend Monitor</h1>
-              <p style={{ margin: 0, fontSize: "0.875rem", opacity: 0.7 }}>Track your positions & avoid liquidation</p>
-            </div>
-          </div>
-
-          <div>
-            {!available && <div style={{ ...styles.badge, ...styles.criticalBadge }}>Freighter Not Detected</div>}
-
-            {available && !publicKey && (
-              <button
-                onClick={connectWallet}
-                disabled={loading}
-                style={{
-                  ...styles.button,
-                  ...(loading ? styles.buttonDisabled : {}),
-                }}
-              >
-                {loading ? "Connecting..." : "Connect Wallet"}
-              </button>
-            )}
-
-            {publicKey && (
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <div style={{ ...styles.badge, ...styles.healthyBadge }}>Connected</div>
-                <div
-                  style={{
-                    padding: "0.5rem",
-                    backgroundColor: "rgba(30, 41, 59, 0.8)",
-                    borderRadius: "8px",
-                    fontSize: "0.875rem",
-                    fontFamily: "monospace",
-                  }}
-                >
-                  {`${publicKey.slice(0, 6)}...${publicKey.slice(-4)}`}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header
+          publicKey={publicKey}
+          connectWallet={connectWallet}
+          loading={loading}
+          available={available}
+        />
 
       {/* Main Content */}
       <main style={styles.main}>
