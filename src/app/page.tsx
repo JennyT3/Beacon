@@ -8,6 +8,7 @@ import { useFreighter } from "../hooks/useFreighter"
 import { Pool } from "@blend-capital/blend-sdk"
 import { calculateHealthFactor } from "../lib/health"
 import  Header from "../components/Header"
+import { sendTelegramNotification } from "../lib/sendTgNotification"
 
 const rpcUrl = "https://soroban-testnet.stellar.org"
 const passphrase = "Test SDF Network ; September 2015"
@@ -207,25 +208,30 @@ export default function Home() {
     ? { collateral: { MOCK: BigInt(mockCollateral) }, debt: { MOCK: BigInt(mockDebt) } }
     : { collateral: rawPositions.collateral, debt: rawPositions.debt ?? {} }
 
-  useEffect(() => {
-    if (!positions.collateral || !positions.debt) return
-
-    const LIQUIDATION_THRESHOLD = 100
-    const NEAR_LIQ_THRESHOLD = 110
-
-    Object.entries(positions.collateral).forEach(([asset, collateral]) => {
-      const debt = positions.debt[asset] || 0n
-      const hf = calculateHealthFactor(collateral, debt)
-
-      if (hf <= LIQUIDATION_THRESHOLD && !alerts[asset]) {
-        toast.error(`${asset} under-collateralized: ${hf.toFixed(2)}% — at risk of liquidation!`, { duration: 8000 })
-        setAlerts((prev) => ({ ...prev, [asset]: true }))
-      } else if (hf <= NEAR_LIQ_THRESHOLD && hf > LIQUIDATION_THRESHOLD && !alerts[`${asset}-near`]) {
-        toast(`${asset} close to liquidation: ${hf.toFixed(2)}%`, { icon: "⚠️", duration: 6000 })
-        setAlerts((prev) => ({ ...prev, [`${asset}-near`]: true }))
-      }
-    })
-  }, [positions, alerts])
+    useEffect(() => {
+      if (!positions.collateral || !positions.debt) return
+    
+      const LIQUIDATION_THRESHOLD = 100
+      const NEAR_LIQ_THRESHOLD = 110
+    
+      Object.entries(positions.collateral).forEach(([asset, collateral]) => {
+        const debt = positions.debt[asset] || 0n
+        const hf = calculateHealthFactor(collateral, debt)
+    
+        if (hf <= LIQUIDATION_THRESHOLD && !alerts[asset]) {
+          const msg = `${asset} under-collateralized: ${hf.toFixed(2)}% — at risk of liquidation!`
+          toast.error(msg, { duration: 8000 })
+          sendTelegramNotification(`⚠️ ${msg}`)
+          setAlerts((prev) => ({ ...prev, [asset]: true }))
+        } else if (hf <= NEAR_LIQ_THRESHOLD && hf > LIQUIDATION_THRESHOLD && !alerts[`${asset}-near`]) {
+          const msg = `${asset} close to liquidation: ${hf.toFixed(2)}%`
+          toast(msg, { icon: "⚠️", duration: 6000 })
+          sendTelegramNotification(`⚠️ ${msg}`)
+          setAlerts((prev) => ({ ...prev, [`${asset}-near`]: true }))
+        }
+      })
+    }, [positions, alerts])
+    
 
   const totalCollateral = Object.values(positions.collateral).reduce((sum, val) => sum + val, 0n)
   const totalDebt = Object.values(positions.debt).reduce((sum, val) => sum + val, 0n)
