@@ -4,11 +4,11 @@ import { useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
 import useSWR from "swr"
 import { PoolV2 } from "@blend-capital/blend-sdk"
-
 import { useFreighter } from "../hooks/useFreighter"
 import { calculateHealthFactor } from "../lib/health"
 import Header from "../components/Header"
 import { sendTelegramNotification } from "../lib/sendTgNotification"
+import { formatXLM, formatTokenAmount } from '@/lib/format'
 
 const rpcUrl = "https://soroban-testnet.stellar.org"
 const passphrase = "Test SDF Network ; September 2015"
@@ -190,6 +190,8 @@ export default function Home() {
   const [mockCollateral, setMockCollateral] = useState<string>("200")
   const [mockDebt, setMockDebt] = useState<string>("150")
 
+  
+
 // fetchUser rimane così:
 const fetchUser = async () => {
   if (!publicKey) return null
@@ -232,29 +234,44 @@ const fetchUser = async () => {
 console.log("➡️ rawPositions.liabilities:", Array.from(rawPositions.liabilities.entries()))
 
 
-  useEffect(() => {
-    if (!positions.collateral || !positions.debt) return
-  
-    const LIQUIDATION_THRESHOLD = 100
-    const NEAR_LIQ_THRESHOLD = 110
-  
-    Object.entries(positions.collateral).forEach(([asset, collateral]) => {
-      const debt = positions.debt[asset] || 0n
-      const hf = calculateHealthFactor(collateral, debt)
-  
-      if (hf <= LIQUIDATION_THRESHOLD && !alerts[asset]) {
-        const msg = `${asset} under-collateralized: ${hf.toFixed(2)}% — at risk of liquidation!`
-        toast.error(msg, { duration: 8000 })
-        sendTelegramNotification(`⚠️ ${msg}`)
-        setAlerts((prev) => ({ ...prev, [asset]: true }))
-      } else if (hf <= NEAR_LIQ_THRESHOLD && hf > LIQUIDATION_THRESHOLD && !alerts[`${asset}-near`]) {
-        const msg = `${asset} close to liquidation: ${hf.toFixed(2)}%`
-        toast(msg, { icon: "⚠️", duration: 6000 })
-        sendTelegramNotification(`⚠️ ${msg}`)
-        setAlerts((prev) => ({ ...prev, [`${asset}-near`]: true }))
-      }
-    })
-  }, [positions, alerts])
+useEffect(() => {
+  if (!positions.collateral || !positions.debt) return
+
+  // formatter per numeri (it-IT, 2 decimali)
+  const nf = new Intl.NumberFormat('it-IT', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+
+  const LIQ_THRESHOLD = 100
+  const NEAR_LIQ_THRESHOLD = 110
+
+  Object.entries(positions.collateral).forEach(([asset, collateral]) => {
+    const debt = positions.debt[asset] || 0n
+    const hf = calculateHealthFactor(collateral, debt) // es. 118.4567
+
+    // --- FORMATTAZIONE UMANO-LEGGIBILE ---
+    // se XLM (7 decimali). Per altri token cambia 1e7 con 10**decimals
+    const collateralHuman = nf.format(Number(collateral) / 1e7)
+    const debtHuman       = nf.format(Number(debt)       / 1e7)
+    const hfHuman         = nf.format(hf) // percentuale già in % (es. 118.45)
+
+    if (hf <= LIQ_THRESHOLD && !alerts[asset]) {
+      const msg = `collateralization ${hfHuman}% — liquidation risk!`
+      toast.error(msg, { duration: 8000 })
+      sendTelegramNotification(`⚠️ ${msg}`)
+      setAlerts(prev => ({ ...prev, [asset]: true }))
+    }
+    else if (hf <= NEAR_LIQ_THRESHOLD && hf > LIQ_THRESHOLD && !alerts[`${asset}-near`]) {
+      const msg = `collateralization ${hfHuman}% - next to liquidation`
+      toast(msg, { icon: "⚠️", duration: 6000 })
+      sendTelegramNotification(`⚠️ ${msg}`)
+      setAlerts(prev => ({ ...prev, [`${asset}-near`]: true }))
+    }
+  })
+}, [positions, alerts])
+
+
   
 
   const totalCollateral = Object.values(positions.collateral).reduce((sum, val) => sum + val, 0n)
@@ -358,7 +375,7 @@ console.log("➡️ rawPositions.liabilities:", Array.from(rawPositions.liabilit
                     <span style={{ color: "#22c55e" }}>↗</span>
                   </div>
                 </div>
-                <div style={{ ...styles.statValue, color: "#22c55e" }}>{totalCollateral.toString()}</div>
+                <div style={{ ...styles.statValue, color: "#22c55e" }}>{formatXLM(totalCollateral)}</div>
               </div>
 
               <div style={styles.statCard}>
@@ -368,7 +385,7 @@ console.log("➡️ rawPositions.liabilities:", Array.from(rawPositions.liabilit
                     <span style={{ color: "#ef4444" }}>↘</span>
                   </div>
                 </div>
-                <div style={{ ...styles.statValue, color: "#ef4444" }}>{totalDebt.toString()}</div>
+                <div style={{ ...styles.statValue, color: "#ef4444" }}>{formatXLM(totalDebt)}</div>
               </div>
 
               <div style={styles.statCard}>
@@ -434,13 +451,13 @@ console.log("➡️ rawPositions.liabilities:", Array.from(rawPositions.liabilit
                       <div>
                         <div style={{ fontSize: "0.875rem", opacity: 0.7, marginBottom: "0.25rem" }}>Collateral</div>
                         <div style={{ fontSize: "1.125rem", fontWeight: "600", color: "#22c55e" }}>
-                          {collateral.toString()}
+                          {formatXLM(collateral)}
                         </div>
                       </div>
                       <div>
                         <div style={{ fontSize: "0.875rem", opacity: 0.7, marginBottom: "0.25rem" }}>Debt</div>
                         <div style={{ fontSize: "1.125rem", fontWeight: "600", color: "#ef4444" }}>
-                          {debt.toString()}
+                          {formatXLM(debt)}
                         </div>
                       </div>
                       <div>

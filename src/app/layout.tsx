@@ -4,7 +4,7 @@ import "./globals.css"
 import { Toaster } from "react-hot-toast"
 
 export const metadata: Metadata = {
-  title: "Stellar Blend Monitor",
+  title: "Beacon",
   description: "Monitor your Stellar Blend positions and avoid liquidation",
 }
 
