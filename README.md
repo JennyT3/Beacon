@@ -3,7 +3,7 @@
 
 Real-time monitoring and alert system that protects Blend lending protocol users on Stellar from liquidation risks by providing actionable notifications via  Telegram.
 
-- **Pitch Deck**: [View Presentation]((https://www.figma.com/proto/UYhPNpax8kanz7jXcmiXlq/Beacon?node-id=3-1227&p=f&t=AOfWRpriQdQjuKoA-0&scaling=scale-down&content-scaling=fixed&page-id=0%3A1)
+- **Pitch Deck**: [View Presentation](https://www.figma.com/proto/UYhPNpax8kanz7jXcmiXlq/Beacon?node-id=3-1227&p=f&t=AOfWRpriQdQjuKoA-0&scaling=scale-down&content-scaling=fixed&page-id=0%3A1)
 - **Video Demo**: [Watch Demo](https://drive.google.com/drive/folders/13jTyc-OcR5R95dKNpCrphJ3NYfjUp6RZ?usp=sharing)
 - **Github**: [Docs](https://github.com/JennyT3/Beacon)
 
